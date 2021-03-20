@@ -2,12 +2,13 @@
 package Models;
 
 import Controls.ClassManager;
-import com.singularsys.jep.JepException;
-import org.nfunk.jep.*;
+
+import org.nfunk.jep.JEP;
 
 public class ProcessCal {
     private ClassManager meClassManager;
     private String funtion = "";
+    private String funtionD = "";
     private double resultado = 0.0;
     private double valorX = 0.0;
     private String error = "";
@@ -22,6 +23,10 @@ public class ProcessCal {
         this.funtion = funtion;
     }
     
+     public void setFuntionD(String funtionD){
+        this.funtionD = funtionD;
+    }
+    
     public void setValorX(double valorX){
         this.valorX = valorX;
     }
@@ -30,17 +35,32 @@ public class ProcessCal {
         return this.resultado = resultado;
     }
     
+    public double getResultadoFuntionD(){
+        return this.resultado = resultado;
+    }
+    
     public String getError(){
         return this.error ;
     }
     
-    private void evaluar() throws JepException{
+    public void evaluar(){
         jep = new JEP();
         
         this.jep.addStandardFunctions();
         this.jep.addStandardConstants();
         this.jep.addVariable("x", this.valorX);
         this.jep.parseExpression(this.funtion);
+        this.resultado = this.jep.getValue();
+        
+        this.error = (this.jep.hasError()) ? "Existe un Error" : "No hay error";
+    }
+    public void evaluarD(){
+        jep = new JEP();
+        
+        this.jep.addStandardFunctions();
+        this.jep.addStandardConstants();
+        this.jep.addVariable("x", this.valorX);
+        this.jep.parseExpression(this.funtionD);
         this.resultado = this.jep.getValue();
         
         this.error = (this.jep.hasError()) ? "Existe un Error" : "No hay error";

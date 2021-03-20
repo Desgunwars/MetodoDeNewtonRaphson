@@ -2,6 +2,7 @@
 package Views;
 
 import Controls.ClassManager;
+import Models.ProcessCal;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.TextField;
@@ -145,11 +146,64 @@ public class MainWindow extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == meButtonCal){
-            String calFuntions = meClassManager.FuntionsCals(textValueXi.getText(),meFunctionTextFlield.getText(), meFunctionDTextFlield.getText());
-            JOptionPane.showMessageDialog(null, calFuntions);
+            /*--------------Almacena la funcion digitada--------------*/
+            String expresionFuntion = meFunctionTextFlield.getText();
+            
+            /*--------------Almacena la funcion derivada digitada--------------*/
+            String expresionFuctionD = meFunctionDTextFlield.getText();
+            
+            /*--------------Almacena el valor de x digitado--------------*/
+            double x = Double.parseDouble(textValueXi.getText());
+            
+            
+            
+            /*--------------Calcula la funcion--------------*/
+            ProcessCal funcion = new ProcessCal();
+            funcion.setFuntion(expresionFuntion);
+            funcion.setValorX(x);
+            funcion.evaluar();
+           // result.setText(funcion.getResultadoFuntion()+"");
+            
+           /*--------------Calcula la derivada--------------*/
+            ProcessCal funcionD = new ProcessCal();
+            funcionD.setFuntionD(expresionFuctionD);
+            funcionD.setValorX(x);
+            funcionD.evaluarD();
+             //resultdf.setText(dfuncion.getResultadoFuntion()+"");
+            //String calFuntions = meClassManager.FuntionsCals(textValueXi.getText(),meFunctionTextFlield.getText(), meFunctionDTextFlield.getText());
+            
+            
+            /*--------------Calcula el metodo de newton rapson y el error absoluto--------------*/
+            double Raphson = x-(funcion.getResultadoFuntion()/funcionD.getResultadoFuntionD());
+            double errorABS = Math.abs((Raphson-x)/Raphson)*100;
+            
+            
+            /*--------------Ciclo que se repetira varias veces miestras sea mayor a 0.05 para encontrar la raiz--------------*/
+            while(errorABS>0.05){
+            
+                /*--------------El valor de x va a hacer el valor del rapson anterior--------------*/
+                x = Raphson;
+                
+                /*--------------Calcula la funcion--------------*/
+                funcion.setFuntion(expresionFuntion);
+                funcion.setValorX(x);
+                funcion.evaluar();
+                
+                /*--------------Calcula la derivada--------------*/
+                funcionD.setFuntionD(expresionFuctionD);
+                funcionD.setValorX(x);
+                funcionD.evaluarD();
+                
+                Raphson = x-(funcion.getResultadoFuntion()/funcionD.getResultadoFuntionD());
+                errorABS = Math.abs((Raphson-x)/Raphson)*100;
+            }
+            
+            JOptionPane.showMessageDialog(null,"La raiz encontrada es: "+Raphson);
+            
+            /*
             textValueXi.setText("");
             meFunctionTextFlield.setText("");
-            meFunctionDTextFlield.setText("");
+            meFunctionDTextFlield.setText("");*/
         }else{
             dispose();
         }
